@@ -1,5 +1,5 @@
 .Item-Request{
-   
+    background-color: #f8f8f8; 
     padding: 20px;
     border-radius: 8px;
     max-width: 900px;
@@ -7,15 +7,15 @@
 }
 h2 {
     text-align: center;
-    color: #000; /* Black text */
+    color: #000;
   }
   
   .table-container {
-    background-color: #f8f8f8; /* Very light green background */
+    background-color: #f8f8f8; 
     padding: 20px;
     border-radius: 8px;
-    max-width: 900px; /* Align with request-form max-width */
-    margin: auto; /* Center the content */
+    max-width: 900px; 
+    margin: auto; 
   }
   
   table {
@@ -25,31 +25,31 @@ h2 {
   }
   
   th, td {
-    border: 1px solid #d1e7d1; /* Light green border */
+    border: 1px solid #d1e7d1; 
     padding: 10px;
     text-align: left;
   }
   
   th {
-    background-color: #a1d8a1; /* Light green header */
-    color: #fff; /* White text */
+    background-color: #a1d8a1; 
+    color: #fff; 
   }
   
   td {
-    background-color: #f8f8f8; /* Very light green background */
+    background-color: #f8f8f8; 
   }
   
   button {
     padding: 8px 12px;
     border: none;
-    background-color: #a1d8a1; /* Light green button */
-    color: #fff; /* White text */
+    background-color: #a1d8a1; 
+    color: #fff; 
     border-radius: 4px;
     cursor: pointer;
   }
   
   button:hover {
-    background-color: #8fcf8f; /* Slightly darker green on hover */
+    background-color: #8fcf8f; 
   }
   
   .add-row-button {
@@ -57,13 +57,34 @@ h2 {
     display: block;
     padding: 10px 15px;
     border: none;
-    background-color: #a1d8a1; /* Light green button */
-    color: #fff; /* White text */
+    background-color: #a1d8a1; 
+    color: #fff; 
     border-radius: 4px;
     cursor: pointer;
   }
   
   .add-row-button:hover {
-    background-color: #8fcf8f; /* Slightly darker green on hover */
+    background-color: #8fcf8f;
   }
-  
+
+  .purpose-section{
+    margin-top: 50px;
+    display: flex;
+    gap: 20px;
+  }
+
+  .purpose-section textarea {
+width: 700px;
+height: 50px;
+  }
+
+  .btn-submit{
+    margin-top: 30px;
+    padding: 10px 15px;
+    border: none;
+    background-color: #a1d8a1; 
+    color: #fff; 
+    border-radius: 4px;
+    cursor: pointer;
+    width: 900px;
+  }

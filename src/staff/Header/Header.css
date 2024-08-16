@@ -1,0 +1,14 @@
+
+.header-container {
+    display: flex;
+    justify-content: flex-end; 
+    gap: 15px; 
+    font-size: 23px;
+    padding-right: 30px;
+    padding-bottom: 20px;
+  }
+  
+  .icon {
+    color: #074107;
+  }
+  
