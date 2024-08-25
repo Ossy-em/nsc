@@ -1,11 +1,35 @@
-import React from 'react'
-import Staffcover from './staff/staffcover'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import LoginPage from './login/LoginPage';
+// import SignUpPage from './signupPage/SignupPage';
+import Staffcover from './staff/staffcover';
+import DashboardHeader from './admin/DashboardHeader/DashboardHeader';
+import PrivateRoute from './utils/Privaterouter'
+
 const App = () => {
   return (
-    <div>
-     <Staffcover/>
-    </div>
-  )
-}
+    <Router>
+      <Routes>
+        <Route path="/" element={<LoginPage />} />
+        {/* <Route path="/signup" element={<SignUpPage />} /> */}
+        <Route
+          path="/staff-request"
+          element={
+            <PrivateRoute requiredRole="staff">
+              <Staffcover />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/admin-dashboard"
+          element={
+            <PrivateRoute requiredRole="admin">
+              <DashboardHeader />
+            </PrivateRoute>
+          }
+        />
+      </Routes>
+    </Router>
+  );
+};
 
-export default App
+export default App;

@@ -1,6 +1,5 @@
 import React from 'react'
 import CompanyName from './CompanyName/CompanyName'
-import StaffForm from './StaffForm/StaffForm'
 import ItemLookup from './ItemLookup/ItemLookup'
 import Header from './Header/Header'
 import './StaffCover.css'
@@ -10,7 +9,6 @@ const staffcover = () => {
     <div className='staff-cover'>
       <Header/>
       <CompanyName/>
-      <StaffForm/>
       <ItemLookup/>
     </div>
   )
