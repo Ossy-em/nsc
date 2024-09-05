@@ -2,6 +2,44 @@ import React from 'react';
 import { useFormik } from 'formik';
 import './StaffForm.css';
 
+const departments = [
+  'Regulatory Services',
+  'Consumer Affairs',
+  'Strategic Planning and Research',
+  'Human Resource Management',
+  'Inland Transport Services',
+  'Legal Services',
+  'Special Duties',
+  'Finance and Accounts',
+  'General Services'
+];
+
+const units = [
+  'Anti-Corruption and Transparency',
+  'Complaints',
+  'Information & Communication Technology',
+  'SERVICOM',
+  'Procurement',
+  'Internal Audit',
+  'Public Relations',
+  'Public Private Partnership (PPP)'
+];
+
+const floors = [
+  'Ground Floor',
+  'First Floor',
+  'Second Floor',
+  'Third Floor',
+  'Fourth Floor',
+  'Fifth Floor',
+  'Sixth Floor',
+  'Seventh Floor',
+  'Eighth Floor',
+  'Ninth Floor',
+  'Tenth Floor',
+  'Eleventh Floor'
+];
+
 function StaffForm({ onFormChange }) {
   const formik = useFormik({
     initialValues: {
@@ -54,15 +92,20 @@ function StaffForm({ onFormChange }) {
       <div className="form-group form-group-horizontal">
         <div className="form-field">
           <label htmlFor="department">Department</label>
-          <input
-            type="text"
+          <select
             id="department"
             name="department"
-            placeholder="Enter Department"
             required
             onChange={formik.handleChange}
             value={formik.values.department}
-          />
+          >
+            <option value="" label="Select Department" />
+            {departments.map((dept) => (
+              <option key={dept} value={dept}>
+                {dept}
+              </option>
+            ))}
+          </select>
         </div>
         <div className="form-field">
           <label htmlFor="manager">Manager</label>
@@ -81,27 +124,37 @@ function StaffForm({ onFormChange }) {
       <div className="form-group form-group-horizontal">
         <div className="form-field">
           <label htmlFor="employeeFloor">Employee Floor</label>
-          <input
-            type="text"
+          <select
             id="employeeFloor"
             name="employeeFloor"
-            placeholder="Enter Employee Floor"
             required
             onChange={formik.handleChange}
             value={formik.values.employeeFloor}
-          />
+          >
+            <option value="" label="Select Floor" />
+            {floors.map((floor) => (
+              <option key={floor} value={floor}>
+                {floor}
+              </option>
+            ))}
+          </select>
         </div>
         <div className="form-field">
           <label htmlFor="unit">Unit</label>
-          <input
-            type="text"
+          <select
             id="unit"
             name="unit"
-            placeholder="Enter Unit"
             required
             onChange={formik.handleChange}
             value={formik.values.unit}
-          />
+          >
+            <option value="" label="Select Unit" />
+            {units.map((unit) => (
+              <option key={unit} value={unit}>
+                {unit}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
     </form>

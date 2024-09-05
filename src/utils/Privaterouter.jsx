@@ -3,6 +3,7 @@ import { Navigate } from 'react-router-dom';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, db } from './firebase';
 import { doc, getDoc } from 'firebase/firestore';
+import './PrivateRoute.css';
 
 const PrivateRoute = ({ children, requiredRole }) => {
   const [user, loading, authError] = useAuthState(auth);
@@ -36,7 +37,7 @@ const PrivateRoute = ({ children, requiredRole }) => {
   }, [user]);
 
   if (loading || roleLoading) {
-    return <div>Loading...</div>;
+    return <div className="div-loader"><span class="loader"></span></div>;
   }
 
   if (authError || roleError) {

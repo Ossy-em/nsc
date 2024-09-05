@@ -1,81 +1,54 @@
-// import React, { useEffect, useState } from 'react';
-// // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import { collection, getDocs } from 'firebase/firestore';
-// import { db } from '../../utils/firebase'
-// import Header from '../../staff/Header/Header';
-// const ViewRequests = () => {
-//   const [requests, setRequests] = useState([]);
-
-//   useEffect(() => {
-//     const fetchRequests = async () => {
-//       const querySnapshot = await getDocs(collection(db, "requests"));
-//       const requestsList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-//       setRequests(requestsList);
-//     };
-//     fetchRequests();
-//   }, []);
-
-//   return (
-//     <div>
-//     <Header/>
-//     <table>
-        
-//       <thead>
-//         <tr>
-//           <th>Name</th>
-//           <th>Department</th>
-//           <th>Unit</th>
-//           <th>Item Requested</th>
-//           <th>Quantity</th>
-//           <th>Purpose</th>
-//           <th>Action</th>
-//         </tr>
-//       </thead>
-//       <tbody>
-//         {requests.map(request => (
-//           <tr key={request.id}>
-//             <td>{request.name}</td>
-//             <td>{request.department}</td>
-//             <td>{request.unit}</td>
-//             <td>{request.itemRequested}</td>
-//             <td>{request.quantity}</td>
-//             <td>{request.purpose}</td>
-//             <td>
-//               {/* Add Approve/Decline buttons or other actions */}
-//               <button>Approve</button>
-//               <button>Decline</button>
-//             </td>
-//           </tr>
-//         ))}
-//       </tbody>
-//     </table>
-//     </div>
-//   );
-// };
-
-// export default ViewRequests;
-import React from 'react';
+import React, { useState } from 'react';
+import { NavLink, Routes, Route, Navigate } from 'react-router-dom';
 import ViewRequests from '../View Request/Viewrequest';
-import './Dashboard.css';
+import Store from '../Store/Stored';
+import History from '../History/History';
+import Dashboard from '../Dashboard/Dashboard';
+import Status from '../Status/Status';
+import NSCLogo from '/Users/mac/Desktop/nsc/src/assets/NSCLogo.png';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBars } from '@fortawesome/free-solid-svg-icons';
+import './DashboardHeader.css';
+
 
 const AdminDashboard = () => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true); // State to manage sidebar toggle
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen); // Toggle sidebar open/close state
+  };
+
   return (
     <div className="admin-dashboard">
-      <header className="dashboard-header">
-        <h1>Admin Dashboard</h1>
+     
+      <div className={`dashboard-sidebar ${isSidebarOpen ? 'open' : 'closed'}`}>
+        <div className='dashboardsidebar-image'>
+          <img src={NSCLogo} alt='image' style={{ width: '50px', height: '40px' }} />
+          <h1>Admin</h1>
+        </div>
         <nav>
           <ul>
             <li><a href="#">View Requests</a></li>
             <li><a href="#">Add User</a></li>
             <li><a href="#">Status</a></li>
+            <li><a href="#">History</a></li>
+            <li><a href="#">Store</a></li>
+            <li><a href="#">Dashboard</a></li>
           </ul>
         </nav>
-      </header>
-      <main>
-        <ViewRequests />
-      </main>
+        <button className="toggle-button" onClick={toggleSidebar}>
+          <FontAwesomeIcon icon={faBars} />
+        </button>
+      </div>
+      <div className="dashboard-content">
+       
+        <section>
+          <ViewRequests />
+        </section>
+      </div>
     </div>
   );
 };
 
 export default AdminDashboard;
+

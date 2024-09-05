@@ -1,21 +1,101 @@
-.view-requests table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-  }
-  
-  .view-requests table th, .view-requests table td {
-    border: 1px solid #ccc;
-    padding: 10px;
-    text-align: left;
-  }
-  
-  .view-requests table th {
-    background-color: #f4f4f4;
-  }
-  
-  .view-requests ul {
-    list-style: none;
-    padding-left: 0;
-  }
-  
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+
+.view-requests {
+  /* background-color: #ffffff; */
+  font-family: 'Roboto', 'Helvetica Neue', sans-serif;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-top: 105px;
+  /* width: 100%; */
+}
+
+.view-requests h2 {
+  color: #2d6a4f; 
+  font-size: 20px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* .view-requests table {
+  border-collapse: collapse;
+  background-color: #080808; 
+  border-radius: 8px;
+  overflow: hidden;
+} */
+
+.view-requests th, .view-requests td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #b0e7b0; 
+}
+
+.view-requests th {
+  background-color: #2d6a4f; 
+  color: white;
+}
+
+.view-requests tr:hover {
+  background-color: #b0e7b0; 
+}
+
+.view-requests ul {
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+}
+
+.view-requests li {
+  padding: 4px 0;
+}
+.approve-icon {
+  color: #4CAF50; 
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.approve-icon:hover {
+  color: #45a049; 
+}
+
+.decline-icon {
+  color: #f44336; 
+  cursor: pointer;
+}
+
+.decline-icon:hover {
+  color: #d32f2f; 
+}
+
+button {
+  padding: 8px 12px;
+  background-color: #4CAF50; 
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #45a049; 
+}
+.Modal {
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+  min-width: 600px;
+  margin: auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.Overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

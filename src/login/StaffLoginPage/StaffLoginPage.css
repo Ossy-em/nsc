@@ -1,0 +1,55 @@
+/* Container for the login form */
+.login-adminStaff {
+    background-color: white;
+    padding: 50px 40px;
+    border-radius: 12px;
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.15);
+    max-width: 400px;
+    width: 100%;
+  }
+  
+  /* Login form elements */
+  .loginForm {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Space between form elements */
+  }
+  
+  .loginForm .in-adminStaff {
+    padding: 12px 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+  }
+  
+  .loginForm .in-adminStaff:focus {
+    border-color: #4CAF50;
+    outline: none;
+    box-shadow: 0 0 8px rgba(76, 175, 80, 0.3);
+  }
+  
+  /* Login button styles */
+  .input-login {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 12px 0;
+    cursor: pointer;
+    font-size: 18px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .input-login:hover {
+    background-color: #45a049;
+    transform: translateY(-2px); /* Slight lift effect on hover */
+  }
+  
+  /* Error message styles */
+  .error-message {
+    color: red;
+    margin-top: -10px;
+    text-align: center;
+    font-size: 14px;
+  }
+  

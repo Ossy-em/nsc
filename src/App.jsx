@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LoginPage from './login/LoginPage';
-// import SignUpPage from './signupPage/SignupPage';
 import Staffcover from './staff/staffcover';
 import DashboardHeader from './admin/DashboardHeader/DashboardHeader';
 import PrivateRoute from './utils/Privaterouter'
@@ -10,7 +9,6 @@ const App = () => {
     <Router>
       <Routes>
         <Route path="/" element={<LoginPage />} />
-        {/* <Route path="/signup" element={<SignUpPage />} /> */}
         <Route
           path="/staff-request"
           element={
