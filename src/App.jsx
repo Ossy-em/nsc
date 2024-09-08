@@ -18,7 +18,7 @@ const App = () => {
           }
         />
         <Route
-          path="/admin-dashboard"
+        path="/admin-dashboard/*" 
           element={
             <PrivateRoute requiredRole="admin">
               <DashboardHeader />

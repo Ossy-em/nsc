@@ -12,43 +12,35 @@ import './DashboardHeader.css';
 
 
 const AdminDashboard = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true); // State to manage sidebar toggle
-
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen); // Toggle sidebar open/close state
-  };
-
   return (
     <div className="admin-dashboard">
-     
-      <div className={`dashboard-sidebar ${isSidebarOpen ? 'open' : 'closed'}`}>
+      <div className="dashboard-sidebar">
         <div className='dashboardsidebar-image'>
-          <img src={NSCLogo} alt='image' style={{ width: '50px', height: '40px' }} />
+          <img src={NSCLogo} alt='Admin Logo' style={{ width: '50px', height: '40px' }} />
           <h1>Admin</h1>
         </div>
         <nav>
           <ul>
-            <li><a href="#">View Requests</a></li>
-            <li><a href="#">Add User</a></li>
-            <li><a href="#">Status</a></li>
-            <li><a href="#">History</a></li>
-            <li><a href="#">Store</a></li>
-            <li><a href="#">Dashboard</a></li>
+            <li><NavLink to="/admin-dashboard/view-requests">View Requests</NavLink></li>
+            <li><NavLink to="/admin-dashboard/dashboard">Dashboard</NavLink></li>
+            <li><NavLink to="/admin-dashboard/status">Status</NavLink></li>
+            <li><NavLink to="/admin-dashboard/history">History</NavLink></li>
+            <li><NavLink to="/admin-dashboard/store">Store</NavLink></li>
           </ul>
         </nav>
-        <button className="toggle-button" onClick={toggleSidebar}>
-          <FontAwesomeIcon icon={faBars} />
-        </button>
       </div>
       <div className="dashboard-content">
-       
-        <section>
-          <ViewRequests />
-        </section>
+        <Routes>
+          <Route path="view-requests" element={<ViewRequests />} />
+          <Route path="dashboard" element={<Dashboard/>} />
+          <Route path="status" element={<Status />} />
+          <Route path="history" element={<History />} />
+          <Route path="store" element={<Store />} />
+          <Route path="/" element={<ViewRequests />} /> {/* Default home page */}
+        </Routes>
       </div>
     </div>
   );
 };
 
 export default AdminDashboard;
-
