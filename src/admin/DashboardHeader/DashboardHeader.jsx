@@ -16,8 +16,9 @@ const AdminDashboard = () => {
     <div className="admin-dashboard">
       <div className="dashboard-sidebar">
         <div className='dashboardsidebar-image'>
-          <img src={NSCLogo} alt='Admin Logo' style={{ width: '50px', height: '40px' }} />
+         
           <h1>Admin</h1>
+          <img src={NSCLogo} alt='Admin Logo' style={{ width: '72px', height: '63px' }} />
         </div>
         <nav>
           <ul>

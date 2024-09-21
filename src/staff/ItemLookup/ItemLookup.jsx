@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Select from 'react-select';
 import { collection, addDoc } from 'firebase/firestore';
-import { db } from '../../utils/firebase'; // Update with your correct path to firebase
+import { db } from '../../utils/firebase';
 import './ItemLookup.css';
 import StaffForm from '../StaffForm/StaffForm';
 
@@ -14,7 +14,7 @@ const itemOptions = [
   { value: 'monitor', label: 'Monitor' },
 ];
 
-const TableBasedSelection = () => {
+const ItemRequestForm = () => {
   const [rows, setRows] = useState([{ item: null, quantity: 1 }]);
   const [purpose, setPurpose] = useState('');
   const [staffFormData, setStaffFormData] = useState({});
@@ -55,7 +55,6 @@ const TableBasedSelection = () => {
     try {
       const docRef = await addDoc(collection(db, 'requests'), requestData);
       console.log('Request submitted with ID: ', docRef.id);
-      // Optionally reset form state here
     } catch (e) {
       console.error('Error adding document: ', e);
     }
@@ -64,21 +63,21 @@ const TableBasedSelection = () => {
   return (
     <div>
       <StaffForm onFormChange={setStaffFormData} />
-      <div className="Item-Request">
-        <h2>Item Request</h2>
-        <form onSubmit={handleSubmit}>
-          <table>
-            <thead>
-              <tr>
-                <th>Item Required</th>
-                <th>Quantity Required</th>
-                <th>Action</th>
+      <div className="item-request-form">
+        <h2 className="item-request-title">Item Request</h2>
+        <form className="item-request-table-form" onSubmit={handleSubmit}>
+          <table className="item-request-table">
+            <thead className="item-request-table-head">
+              <tr className="item-request-table-row">
+                <th className="item-request-table-header">Item Required</th>
+                <th className="item-request-table-header">Quantity Required</th>
+                <th className="item-request-table-header">Action</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="item-request-table-body">
               {rows.map((row, index) => (
-                <tr key={index}>
-                  <td>
+                <tr key={index} className="item-request-table-row">
+                  <td className="item-request-table-cell">
                     <Select
                       options={itemOptions}
                       value={row.item}
@@ -86,7 +85,7 @@ const TableBasedSelection = () => {
                       placeholder="Select an item"
                     />
                   </td>
-                  <td>
+                  <td className="item-request-table-cell">
                     <input
                       type="number"
                       value={row.quantity}
@@ -95,28 +94,39 @@ const TableBasedSelection = () => {
                       placeholder="Quantity"
                     />
                   </td>
-                  <td>
-                    <button type="button" onClick={() => handleRemoveRow(index)}>Remove</button>
+                  <td className="item-request-table-cell">
+                    <button
+                      className="item-request-remove-button"
+                      type="button"
+                      onClick={() => handleRemoveRow(index)}
+                    >
+                      Remove
+                    </button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-          <button type="button" onClick={handleAddRow}>Add Row</button>
+          <button className="item-request-add-button" type="button" onClick={handleAddRow}>
+            Add Row
+          </button>
 
-          <div className="purpose-section">
-            <h2>Purpose:</h2>
+          <div className="item-request-purpose-section">
+            <h2 className="item-request-purpose-title">Purpose:</h2>
             <textarea
+              className="item-request-purpose-textarea"
               value={purpose}
               onChange={(e) => setPurpose(e.target.value)}
               placeholder="Write the purpose here"
             ></textarea>
           </div>
-          <button className="btn-submit" type="submit">Submit</button>
+          <button className="item-request-submit-button" type="submit">
+            Submit
+          </button>
         </form>
       </div>
     </div>
   );
 };
 
-export default TableBasedSelection;
+export default ItemRequestForm;
