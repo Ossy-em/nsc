@@ -1,23 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import { getRequestsForCurrentMonth, calculateTotalItemsForOverview, groupRequestsByFloorAndWeek } from '../ApexChart';
+import { getRequestsForCurrentMonth, calculateTotalItemsForOverview, groupRequestsByFloorAndWeek, getAcceptedRequests } from '../ApexChart';
 import Chart from 'react-apexcharts';
-import { Box, Grid, Typography } from '@mui/material';
 import './Dashboard.css';
+import { IoClose } from 'react-icons/io5'; 
 
 const Dashboard = () => {
   const [totalItems, setTotalItems] = useState(0);
   const [chartData, setChartData] = useState({});
+  const [acceptedItems, setAcceptedItems] = useState(0);
+  const [acceptedChartData, setAcceptedChartData] = useState({});
   const [loading, setLoading] = useState(true);
-  const [showChart, setShowChart] = useState(false);
+  const [visibleChart, setVisibleChart] = useState(null); // For tracking which chart is visible
 
   useEffect(() => {
     const fetchData = async () => {
       const requests = await getRequestsForCurrentMonth();
+      const acceptedRequests = await getAcceptedRequests();
+      
       const total = calculateTotalItemsForOverview(requests);
+      const acceptedTotal = calculateTotalItemsForOverview(acceptedRequests);
+      
       const groupedData = groupRequestsByFloorAndWeek(requests);
+      const groupedAcceptedData = groupRequestsByFloorAndWeek(acceptedRequests);
 
       setTotalItems(total);
+      setAcceptedItems(acceptedTotal);
       setChartData(groupedData);
+      setAcceptedChartData(groupedAcceptedData);
       setLoading(false);
     };
 
@@ -35,6 +44,11 @@ const Dashboard = () => {
   const series = weeks.map((week, weekIndex) => ({
     name: week,
     data: floors.map((floor) => chartData[floor][`Week${weekIndex + 1}`] || 0),
+  }));
+
+  const acceptedSeries = weeks.map((week, weekIndex) => ({
+    name: week,
+    data: floors.map((floor) => acceptedChartData[floor][`Week${weekIndex + 1}`] || 0),
   }));
 
   const options = {
@@ -68,29 +82,56 @@ const Dashboard = () => {
     },
   };
 
-  return (
-    <div className="dashboard">
-      <Grid container spacing={3}>
-        <Grid item xs={12} sm={4}>
-          <Box
-            className="overview-box"
-            sx={{ backgroundColor: '#e3f2fd', padding: '20px' }}
-            onClick={() => setShowChart(!showChart)}
-          >
-            <Typography variant="h6">Total Requests</Typography>
-            <Typography variant="h4">{totalItems}</Typography>
-            <Typography variant="subtitle1">
-              Total number of items requested for the month of {new Date().toLocaleString('default', { month: 'long' })}
-            </Typography>
-          </Box>
-        </Grid>
-      </Grid>
+  const acceptedOptions = {
+    ...options,
+    title: {
+      text: 'Accepted Requests by Floor and Week',
+    },
+  };
 
-      {showChart && (
-        <div className="chart-container" style={{ marginTop: '30px' }}>
-          <Chart options={options} series={series} type="bar" height={350} />
+  // Function to toggle between charts and ensure only one is visible
+  const handleChartToggle = (chart) => {
+    setVisibleChart((prevChart) => (prevChart === chart ? null : chart)); // If the clicked chart is already showing, close it
+  };
+
+  // Function to close any chart
+  const closeChart = () => setVisibleChart(null);
+
+  return (
+    <div className="dashboard-container">
+      <div className="dashboard-overview">
+        <div className="overview total-requests" onClick={() => handleChartToggle('totalRequests')}>
+          <h6>Total Requests</h6>
+          <p>{new Date().toLocaleString('default', { month: 'long' })}</p>
+          <h4>{totalItems}</h4>
         </div>
-      )}
+
+        <div className="overview accepted-requests" onClick={() => handleChartToggle('acceptedRequests')}>
+          <h6>Accepted Requests</h6>
+          <p>{new Date().toLocaleString('default', { month: 'long' })}</p>
+          <h4>{acceptedItems}</h4>
+        </div>
+      </div>
+
+      <div className="chart-section">
+        {visibleChart === 'totalRequests' && (
+          <div className="chart-container">
+            <button className="close-chart-btn" onClick={closeChart}>
+              <IoClose size={24} />
+            </button>
+            <Chart options={options} series={series} type="bar" height={350} />
+          </div>
+        )}
+
+        {visibleChart === 'acceptedRequests' && (
+          <div className="chart-container">
+            <button className="close-chart-btn" onClick={closeChart}>
+              <IoClose size={24} />
+            </button>
+            <Chart options={acceptedOptions} series={acceptedSeries} type="bar" height={350} />
+          </div>
+        )}
+      </div>
     </div>
   );
 };

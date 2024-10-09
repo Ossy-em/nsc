@@ -29,6 +29,24 @@ export const getRequestsForCurrentMonth = async () => {
   return requests;
 };
 
+// Function to fetch accepted requests
+export const getAcceptedRequests = async () => {
+  const requestsRef = collection(db, 'requests');
+  const q = query(requestsRef, where('status', '==', 'accepted'));
+
+  const querySnapshot = await getDocs(q);
+  const requests = [];
+
+  querySnapshot.forEach((doc) => {
+    const data = doc.data();
+    data.items.forEach((item) => {
+      requests.push({ ...item, floor: data.staffInfo.employeeFloor, timestamp: data.timestamp });
+    });
+  });
+
+  return requests;
+};
+
 // Function to calculate total items for the overview
 export const calculateTotalItemsForOverview = (requests) => {
   let totalItems = 0;

@@ -1,11 +1,11 @@
 .admin {
-  background: linear-gradient(135deg, #ccddd3, #d4e8dd); /* Background gradient for the .admin container */
+  background: linear-gradient(135deg, #ccddd3, #d4e8dd); 
   min-height: 100vh;
   padding: 20px;
 }
 
 .admin-dashboard {
-  background: linear-gradient(135deg, #ccddd3, #d4e8dd, #e6f2ea, #f2faf5); /* Gradient with 4 colors */
+  background: linear-gradient(135deg, #ccddd3, #d4e8dd, #e6f2ea, #f2faf5); 
   min-height: 100vh;
   display: flex;
   border-radius: 15px;
