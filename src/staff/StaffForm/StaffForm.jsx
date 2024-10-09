@@ -27,17 +27,17 @@ const units = [
 
 const floors = [
   'Ground Floor',
-  'First Floor',
-  'Second Floor',
-  'Third Floor',
-  'Fourth Floor',
-  'Fifth Floor',
-  'Sixth Floor',
-  'Seventh Floor',
-  'Eighth Floor',
-  'Ninth Floor',
-  'Tenth Floor',
-  'Eleventh Floor'
+  '1st Floor',
+  '2nd Floor',
+  '3rd Floor',
+  '4th Floor',
+  '5th Floor',
+  '6th Floor',
+  '7th Floor',
+  '8th Floor',
+  '9th Floor',
+  '10th Floor',
+  '11th Floor'
 ];
 
 function StaffForm({ onFormChange }) {
