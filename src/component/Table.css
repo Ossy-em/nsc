@@ -1,69 +1,40 @@
-/* General container for the table */
-.view-requests {
-    padding: 20px;
-    margin: 0 auto;
-    width: 100%;
-    max-width: 1000px;
-    box-sizing: border-box;
-  }
-  
-  .MuiDataGrid-root {
-    border: none;
-    max-height: 500px;
-    overflow: hidden;
-  }
-  
-  .MuiDataGrid-columnHeaders {
-    position: sticky;
-    top: 0;
-    background: linear-gradient(135deg, #ccddd3, #d4e8dd) !important; /* Apply the gradient here */
-    z-index: 100;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional shadow for effect */
-    font-weight: bold;
-    color: #333; /* Ensure text color is dark for readability */
-  }
-  
-  .MuiDataGrid-cell {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    font-size: 14px;
-  }
-  
-  .MuiDataGrid-row {
-    text-align: left;
-  }
-  
-  .MuiIconButton-root {
-    padding: 4px;
-  }
-  
-  ol {
-    padding-left: 15px;
-    margin: 0;
-  }
-  
-  li {
-    list-style-position: inside;
-    font-size: 13px;
-  }
-  
-  .Menu {
-    z-index: 1500;
-  }
-  
-  .MuiDataGrid-root .MuiDataGrid-virtualScroller {
-    max-height: 500px;
-    overflow-y: auto;
-    overflow-x: hidden;
-  }
-  
-  .table-container {
-    padding: 0 15px;
-  }
-  
-  .MuiDataGrid-main {
-    width: 100%;
-    overflow-x: hidden;
-  }
-  
+/* Container for the entire DataGrid */
+.data-grid-container {
+  width: 100%; 
+  height: 80vh; /* You can adjust this value to set the overall height of the grid container */
+  display: flex;
+  justify-content: center; /* Optional: Centers the grid horizontally */
+  overflow: hidden;
+}
+
+/* Styling the DataGrid itself */
+.custom-data-grid {
+  min-height: 70vh; /* Forces the table to have a minimum height */
+  height: 100%; /* Ensure the grid takes up full height of the container */
+  min-width: 100%; /* Ensure the grid is full-width */
+  box-sizing: border-box; /* Ensures padding and borders are included in the width/height */
+  max-height: 100%; /* Prevents overflow if content expands too much */
+}
+
+/* Optional Styling for row items */
+.items-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.item {
+  padding: 4px;
+  font-size: 14px;
+}
+
+/* Styling for the action menu button */
+.action-menu {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Styling the menu options (dropdown) */
+.menu-options {
+  font-size: 14px;
+}

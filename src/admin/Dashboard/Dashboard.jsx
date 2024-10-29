@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { getRequestsForCurrentMonth, calculateTotalItemsForOverview, groupRequestsByFloorAndWeek, getAcceptedRequests } from '../ApexChart';
+import { getRequestsForCurrentMonth, calculateTotalItemsForOverview, groupRequestsByFloorAndWeek, getAcceptedRequests, getDeclinedRequests } from '../ApexChart';
 import Chart from 'react-apexcharts';
+import ItemUsageChart from '../ItemUsageChart'; 
 import './Dashboard.css';
 import { IoClose } from 'react-icons/io5'; 
 
@@ -8,25 +9,33 @@ const Dashboard = () => {
   const [totalItems, setTotalItems] = useState(0);
   const [chartData, setChartData] = useState({});
   const [acceptedItems, setAcceptedItems] = useState(0);
+  const [declinedItems, setDeclinedItems] = useState(0);
   const [acceptedChartData, setAcceptedChartData] = useState({});
+  const [declinedChartData, setDeclinedChartData] = useState({});
   const [loading, setLoading] = useState(true);
+  const [showItemUsageChart, setShowItemUsageChart] = useState(false);
   const [visibleChart, setVisibleChart] = useState(null); // For tracking which chart is visible
 
   useEffect(() => {
     const fetchData = async () => {
       const requests = await getRequestsForCurrentMonth();
       const acceptedRequests = await getAcceptedRequests();
+      const declinedRequests = await getDeclinedRequests();
       
       const total = calculateTotalItemsForOverview(requests);
       const acceptedTotal = calculateTotalItemsForOverview(acceptedRequests);
+      const declinedTotal = calculateTotalItemsForOverview(declinedRequests);
       
       const groupedData = groupRequestsByFloorAndWeek(requests);
       const groupedAcceptedData = groupRequestsByFloorAndWeek(acceptedRequests);
+      const groupedDeclinedData = groupRequestsByFloorAndWeek(declinedRequests);
 
       setTotalItems(total);
       setAcceptedItems(acceptedTotal);
+      setDeclinedItems(declinedTotal);
       setChartData(groupedData);
       setAcceptedChartData(groupedAcceptedData);
+      setDeclinedChartData(groupedDeclinedData);
       setLoading(false);
     };
 
@@ -39,7 +48,7 @@ const Dashboard = () => {
 
   // Prepare data for ApexCharts
   const floors = Object.keys(chartData);
-  const weeks = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
+  const weeks = ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5'];
 
   const series = weeks.map((week, weekIndex) => ({
     name: week,
@@ -49,6 +58,11 @@ const Dashboard = () => {
   const acceptedSeries = weeks.map((week, weekIndex) => ({
     name: week,
     data: floors.map((floor) => acceptedChartData[floor][`Week${weekIndex + 1}`] || 0),
+  }));
+
+  const declinedSeries = weeks.map((week, weekIndex) => ({
+    name: week,
+    data: floors.map((floor) => declinedChartData[floor][`Week${weekIndex + 1}`] || 0),
   }));
 
   const options = {
@@ -89,6 +103,13 @@ const Dashboard = () => {
     },
   };
 
+  const declinedOptions = {
+    ...options,
+    title: {
+      text: 'Declined Requests by Floor and Week',
+    },
+  };
+
   // Function to toggle between charts and ensure only one is visible
   const handleChartToggle = (chart) => {
     setVisibleChart((prevChart) => (prevChart === chart ? null : chart)); // If the clicked chart is already showing, close it
@@ -111,7 +132,15 @@ const Dashboard = () => {
           <p>{new Date().toLocaleString('default', { month: 'long' })}</p>
           <h4>{acceptedItems}</h4>
         </div>
+
+        <div className="overview declined-requests" onClick={() => handleChartToggle('declinedRequests')}>
+          <h6>Declined Requests</h6>
+          <p>{new Date().toLocaleString('default', { month: 'long' })}</p>
+          <h4>{declinedItems}</h4> 
+         </div>
       </div>
+
+      
 
       <div className="chart-section">
         {visibleChart === 'totalRequests' && (
@@ -131,7 +160,25 @@ const Dashboard = () => {
             <Chart options={acceptedOptions} series={acceptedSeries} type="bar" height={350} />
           </div>
         )}
+
+        {visibleChart === 'declinedRequests' && (
+          <div className="chart-container">
+            <button className="close-chart-btn" onClick={closeChart}>
+              <IoClose size={24} />
+            </button>
+            <Chart options={declinedOptions} series={declinedSeries} type="bar" height={350} />
+          </div>
+        )}
       </div>
+      <button
+        onClick={() => setShowItemUsageChart((prev) => !prev)}
+        style={{ padding: '10px 20px', margin: '20px 0', cursor: 'pointer' }}
+      >
+        {showItemUsageChart ? 'Hide' : 'Show'} Item Usage Chart
+      </button>
+      
+      {/* Conditionally render the Item Usage Chart */}
+      {showItemUsageChart && <ItemUsageChart />}
     </div>
   );
 };

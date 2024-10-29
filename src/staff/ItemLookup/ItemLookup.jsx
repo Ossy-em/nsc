@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Select from 'react-select';
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc, setDoc, doc } from 'firebase/firestore';
 import { db } from '../../utils/firebase';
 import './ItemLookup.css';
 import StaffForm from '../StaffForm/StaffForm';
@@ -53,8 +53,20 @@ const ItemRequestForm = () => {
     };
 
     try {
-      const docRef = await addDoc(collection(db, 'requests'), requestData);
-      console.log('Request submitted with ID: ', docRef.id);
+      // Add to requests collection
+      const requestDocRef = await addDoc(collection(db, 'requests'), requestData);
+      console.log('Request submitted with ID: ', requestDocRef.id);
+      
+      // Prepare total request data for totalrequests collection
+      const totalRequestData = {
+        ...requestData,
+        originalRequestId: requestDocRef.id, // Link to the original request
+      };
+
+      // Add to totalrequests collection
+      const totalDocRef = await addDoc(collection(db, 'totalrequests'), totalRequestData); // Updated path
+      console.log('Total request submitted with ID: ', totalDocRef.id);
+
     } catch (e) {
       console.error('Error adding document: ', e);
     }

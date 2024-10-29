@@ -1,60 +1,6 @@
-
-.history-requests {
-    margin: 20px;
-    padding: 20px;
-    background-color: #f9f9f9; /* Light background for the content */
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .history-requests h2 {
-    font-size: 16px;
-    margin-bottom: 20px;
-    text-align: center;
-  }
-  
-  /* Table styling */
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-    font-size: 12px;
-  }
-  
-  thead {
-    background-color: #e7f5e8; /* Light green header */
-  }
-  
-  thead th {
-    padding: 10px;
-    font-size: 14;
-    text-align: left;
-  }
-  
-  tbody tr {
-    border-bottom: 1px solid #ddd;
-  }
-  
-  tbody tr:nth-child(even) {
-    background-color: #f2f2f2;
-  }
-  
-  tbody td {
-    padding: 10px;
-    vertical-align: top;
-  }
-  
-  /* List inside the table for requested items */
-  tbody ul {
-    padding-left: 20px;
-    margin: 0;
-  }
-  
-  tbody li {
-    list-style-type: disc;
-    margin: 5px 0;
-  }
-  
+.history-requests{
+  width: 50%;
+  background-color: aqua;
+  height: fit-content;
  
-  
- 
+}

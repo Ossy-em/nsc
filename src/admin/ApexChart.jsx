@@ -8,7 +8,7 @@ export const getRequestsForCurrentMonth = async () => {
   const endOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
 
   // Firestore query for requests within the current month
-  const requestsRef = collection(db, 'requests');
+  const requestsRef = collection(db, 'totalrequests');
   const q = query(
     requestsRef,
     where('timestamp', '>=', startOfMonth.toISOString()),
@@ -31,8 +31,26 @@ export const getRequestsForCurrentMonth = async () => {
 
 // Function to fetch accepted requests
 export const getAcceptedRequests = async () => {
-  const requestsRef = collection(db, 'requests');
-  const q = query(requestsRef, where('status', '==', 'accepted'));
+  const requestsRef = collection(db, 'history');
+  const q = query(requestsRef, where('status', '==', 'Accepted'));
+
+  const querySnapshot = await getDocs(q);
+  const requests = [];
+
+  querySnapshot.forEach((doc) => {
+    const data = doc.data();
+    data.items.forEach((item) => {
+      requests.push({ ...item, floor: data.staffInfo.employeeFloor, timestamp: data.timestamp });
+    });
+  });
+
+  return requests;
+};
+
+// Function to fetch accepted requests
+export const getDeclinedRequests = async () => {
+  const requestsRef = collection(db, 'history');
+  const q = query(requestsRef, where('status', '==', 'Declined'));
 
   const querySnapshot = await getDocs(q);
   const requests = [];
@@ -64,7 +82,7 @@ export const groupRequestsByFloorAndWeek = (requests) => {
   // Initialize the groupedData with all floors and weeks set to 0
   const groupedData = {};
   floorOrder.forEach(floor => {
-    groupedData[floor] = { Week1: 0, Week2: 0, Week3: 0, Week4: 0 };
+    groupedData[floor] = { Week1: 0, Week2: 0, Week3: 0, Week4: 0, Week5: 0 };
   });
 
   // Map Firestore floor names like "1st floor" to "Floor 1"
@@ -90,7 +108,9 @@ export const groupRequestsByFloorAndWeek = (requests) => {
         groupedData[floor].Week3 += request.quantity || 0;
       } else if (week === 4) {
         groupedData[floor].Week4 += request.quantity || 0;
-      }
+      } else if (week === 5) {
+       groupedData[floor].Week5 += request.quantity || 0;
+    }
     }
   });
 
