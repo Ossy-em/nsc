@@ -2,6 +2,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LoginPage from './login/LoginPage';
 import Staffcover from './staff/staffcover';
 import DashboardHeader from './admin/DashboardHeader/DashboardHeader';
+import Sidebar from './stored/Sidebar/Sidebar';
+import './index.css'
 import PrivateRoute from './utils/Privaterouter'
 
 const App = () => {
@@ -25,7 +27,18 @@ const App = () => {
             </PrivateRoute>
           }
         />
+
+<Route
+        path="/store-dashboard/*" 
+          element={
+            <PrivateRoute requiredRole="store">
+              <Sidebar />
+            </PrivateRoute>
+          }
+        />
       </Routes>
+      
+   
     </Router>
   );
 };

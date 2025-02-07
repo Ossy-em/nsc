@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import StaffLoginPage from './StaffLoginPage/StaffLoginPage';
 import AdminLoginPage from './AdminLoginPage/AdminLoginPage';
+
 import './LoginPage.css';
 
 const LoginPage = () => {
-  const [view, setView] = useState('staff'); // Default to 'staff' view
+  const [view, setView] = useState('staff'); 
 
   const handleStaffClick = () => {
     setView('staff');

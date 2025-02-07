@@ -1,11 +1,11 @@
 import React from 'react'
 
-const StoreHeader = () => {
+const History = () => {
   return (
     <div>
-      
+      History
     </div>
   )
 }
 
-export default StoreHeader
+export default History

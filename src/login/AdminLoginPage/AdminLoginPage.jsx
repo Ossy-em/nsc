@@ -2,21 +2,42 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { signInWithEmailAndPassword } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
+import { auth, db } from '../../utils/firebase'; // Ensure you import your Firestore instance
 import './AdminLoginPage.css';
-import { auth } from '../../utils/firebase';
 
 const AdminLoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate();
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(null); // Reset error before attempt
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      console.log('Login successful');
-      navigate('/admin-dashboard'); // Navigate to admin dashboard
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Retrieve user role from Firestore
+      const userDoc = await getDoc(doc(db, 'Users', user.uid));
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        const role = userData.role;
+
+       
+        if (role === 'admin') {
+          navigate('/admin-dashboard');
+        } else if (role === 'store') {
+          navigate('/store-dashboard');
+        } else if (role === 'deskOfficer') {
+          navigate('/desk-dashboard');
+        } else {
+          setError('Unauthorized role');
+        }
+      } else {
+        setError('User role not found');
+      }
     } catch (error) {
       console.error('Error logging in:', error);
       setError(error.message);
@@ -36,7 +57,7 @@ const AdminLoginPage = () => {
   const buttonVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { delay: 0.5, duration: 0.5 } },
-    hover: { scale: 1.1, backgroundColor: "#4CAF50", transition: { yoyo: Infinity } }
+    hover: { scale: 1.1, backgroundColor: "#4CAF50", transition: { yoyo: Infinity } },
   };
 
   return (

@@ -1,10 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, onSnapshot, addDoc } from 'firebase/firestore';
 import { db } from '../../utils/firebase';
 import './Store.css';
 
 const Store = () => {
   const [storeItems, setStoreItems] = useState([]);
+  const [newItemName, setNewItemName] = useState(
+    {
+      brand:'',
+      productType:'',
+      modelNumber:'',
+      series:'',
+      color:'',
+      quantity:'',
+    }
+  );
   const [filteredItems, setFilteredItems] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -41,8 +51,6 @@ const Store = () => {
   return (
     <div className="store-container">
       <h1>Store Items</h1>
-
-      {/* Search Input */}
       <input
         type="text"
         placeholder="Search by name or model"
