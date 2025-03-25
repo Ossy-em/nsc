@@ -1,111 +1,92 @@
+// src/admin/AdminLoginPage.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
-import { auth, db } from '../../utils/firebase'; // Ensure you import your Firestore instance
-import './AdminLoginPage.css';
+import { collection, query, where, getDocs } from 'firebase/firestore';
+import { db } from '../../utils/firebase';
 
-const AdminLoginPage = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState(null);
+const AdminLogin = () => {
+  const [username, setUsername] = useState('ictadmin');
+  const [password, setPassword] = useState('ICT2025');
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    setError(null); // Reset error before attempt
+    console.log('Login attempt:', { username, password });
+
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
+      console.log('Starting Firestore query...');
+      const adminsRef = collection(db, 'admins'); // Matches your DB
+      console.log('Collection ref:', adminsRef);
+      const q = query(adminsRef, where('username', '==', username));
+      console.log('Query built:', q);
+      const snapshot = await getDocs(q);
+      console.log('Snapshot docs:', snapshot.docs.length);
 
-      // Retrieve user role from Firestore
-      const userDoc = await getDoc(doc(db, 'Users', user.uid));
-      if (userDoc.exists()) {
-        const userData = userDoc.data();
-        const role = userData.role;
-
-       
-        if (role === 'admin') {
-          navigate('/admin-dashboard');
-        } else if (role === 'store') {
-          navigate('/store-dashboard');
-        } else if (role === 'deskOfficer') {
-          navigate('/desk-dashboard');
-        } else {
-          setError('Unauthorized role');
-        }
-      } else {
-        setError('User role not found');
+      if (snapshot.empty) {
+        console.log('No matching admin found');
+        setError('Invalid username or password');
+        return;
       }
-    } catch (error) {
-      console.error('Error logging in:', error);
-      setError(error.message);
+
+      const adminData = snapshot.docs[0].data();
+      console.log('Admin data:', adminData);
+
+      if (adminData.password !== password) {
+        console.log('Password mismatch:', adminData.password, 'vs', password);
+        setError('Invalid username or password');
+        return;
+      }
+
+      console.log('Login success, setting session...');
+      sessionStorage.setItem('user', JSON.stringify({
+        role: 'admin', // Hardcoded to match PrivateRoute
+        username: adminData.username,
+        id: snapshot.docs[0].id,
+      }));
+      console.log('Session set:', sessionStorage.getItem('user'));
+      console.log('Navigating to /admin-dashboard');
+      navigate('/admin-dashboard');
+    } catch (err) {
+      console.error('Login error:', err.code, err.message);
+      setError(`Failed to log in: ${err.message}`);
     }
   };
 
-  const containerVariants = {
-    hidden: { opacity: 0, y: -50 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-  };
-
-  const inputVariants = {
-    hidden: { opacity: 0, x: -20 },
-    visible: { opacity: 1, x: 0, transition: { delay: 0.3, duration: 0.5 } },
-  };
-
-  const buttonVariants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { delay: 0.5, duration: 0.5 } },
-    hover: { scale: 1.1, backgroundColor: "#4CAF50", transition: { yoyo: Infinity } },
-  };
-
   return (
-    <motion.div
-      className="login-adminStaff"
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
-    >
-      <form className='loginForm' onSubmit={handleSubmit}>
-        <motion.input
-          className='in-adminStaff'
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          autoComplete='email'
-          variants={inputVariants}
-          initial="hidden"
-          animate="visible"
-        />
-        <motion.input 
-          className='in-adminStaff'
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          autoComplete='current-password'
-          variants={inputVariants}
-          initial="hidden"
-          animate="visible"
-        />
-        {error && <p className="error-message">{error}</p>}
-        <motion.button 
-          className="input-login"
-          type="submit" 
-          variants={buttonVariants} 
-          initial="hidden" 
-          animate="visible"
-          whileHover="hover"
+    <div className="flex items-center justify-center ">
+      <form onSubmit={handleLogin} className="p-6 bg-white rounded-lg shadow-md w-96">
+        <h2 className="text-2xl font-bold text-gray-800 mb-6">ICT Admin Login</h2>
+        <div className="mb-4">
+          <label className="block text-gray-700 mb-2">Username</label>
+          <input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Enter username"
+            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        <div className="mb-6">
+          <label className="block text-gray-700 mb-2">Password</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Enter password"
+            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        {error && <p className="text-red-500 mb-4">{error}</p>}
+        <button
+          type="submit"
+          className="w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
         >
           Login
-        </motion.button>
+        </button>
       </form>
-    </motion.div>
+    </div>
   );
 };
 
-export default AdminLoginPage;
+export default AdminLogin;

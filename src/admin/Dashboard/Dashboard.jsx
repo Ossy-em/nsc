@@ -1,210 +1,89 @@
-import React, { useState, useEffect } from "react";
-import {
-  getRequestsForCurrentMonth,
-  calculateTotalItemsForOverview,
-  groupRequestsByFloorAndWeek,
-  getAcceptedRequests,
-  getDeclinedRequests,
-} from "../ApexChart";
-import Chart from "react-apexcharts";
-import ItemUsageChart from "../ItemUsageChart";
-import "./Dashboard.css";
-import { IoClose } from "react-icons/io5";
+// src/admin/Dashboard.js
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../../utils/firebase';
+import DashboardOverview from './DashboardOverview';
 
 const Dashboard = () => {
-  const [totalItems, setTotalItems] = useState(0);
-  const [chartData, setChartData] = useState({});
-  const [acceptedItems, setAcceptedItems] = useState(0);
-  const [declinedItems, setDeclinedItems] = useState(0);
-  const [acceptedChartData, setAcceptedChartData] = useState({});
-  const [declinedChartData, setDeclinedChartData] = useState({});
+  const navigate = useNavigate();
+  const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [showItemUsageChart, setShowItemUsageChart] = useState(false);
-  const [visibleChart, setVisibleChart] = useState(null); // For tracking which chart is visible
+  const [error, setError] = useState('');
+  const [requests, setRequests] = useState([]);
+  const [departments, setDepartments] = useState({});
 
   useEffect(() => {
-    const fetchData = async () => {
-      const requests = await getRequestsForCurrentMonth();
-      const acceptedRequests = await getAcceptedRequests();
-      const declinedRequests = await getDeclinedRequests();
-
-      const total = calculateTotalItemsForOverview(requests);
-      const acceptedTotal = calculateTotalItemsForOverview(acceptedRequests);
-      const declinedTotal = calculateTotalItemsForOverview(declinedRequests);
-
-      const groupedData = groupRequestsByFloorAndWeek(requests);
-      const groupedAcceptedData = groupRequestsByFloorAndWeek(acceptedRequests);
-      const groupedDeclinedData = groupRequestsByFloorAndWeek(declinedRequests);
-
-      setTotalItems(total);
-      setAcceptedItems(acceptedTotal);
-      setDeclinedItems(declinedTotal);
-      setChartData(groupedData);
-      setAcceptedChartData(groupedAcceptedData);
-      setDeclinedChartData(groupedDeclinedData);
-      setLoading(false);
+    const checkAuth = () => {
+      const storedUser = sessionStorage.getItem('user');
+      console.log('Dashboard auth check, storedUser:', storedUser);
+      if (!storedUser) {
+        console.log('No session found, redirecting to /admin-login');
+        navigate('/admin-login');
+        return null;
+      }
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        console.log('Parsed user:', parsedUser);
+        return parsedUser;
+      } catch (err) {
+        console.error('Auth parse error:', err);
+        setError('Authentication failed');
+        navigate('/admin-login');
+        return null;
+      }
     };
 
-    fetchData();
-  }, []);
+    console.log('Dashboard useEffect running');
+    const user = checkAuth();
+    if (user) {
+      console.log('User authenticated, fetching data');
+      setUserData(user);
+      fetchData();
+    } else {
+      console.log('No valid user, setting loading false');
+      setLoading(false);
+    }
+  }, [navigate]);
 
-  if (loading) {
-    return <div className="loading-spinner">Loading...</div>;
-  }
+  const fetchData = async () => {
+    try {
+      const requestsRef = collection(db, 'requests');
+      const reqSnapshot = await getDocs(requestsRef);
+      const allRequests = reqSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setRequests(allRequests);
 
-  // Prepare data for ApexCharts
-  const floors = Object.keys(chartData);
-  const weeks = ["Week 1", "Week 2", "Week 3", "Week 4", "Week 5"];
+      const deptsRef = collection(db, 'departments');
+      const deptSnapshot = await getDocs(deptsRef);
+      const deptMap = deptSnapshot.docs.reduce((acc, doc) => {
+        acc[doc.id] = doc.data().name;
+        return acc;
+      }, {});
+      setDepartments(deptMap);
 
-  const series = weeks.map((week, weekIndex) => ({
-    name: week,
-    data: floors.map((floor) => chartData[floor][`Week${weekIndex + 1}`] || 0),
-  }));
-
-  const acceptedSeries = weeks.map((week, weekIndex) => ({
-    name: week,
-    data: floors.map(
-      (floor) => acceptedChartData[floor][`Week${weekIndex + 1}`] || 0
-    ),
-  }));
-
-  const declinedSeries = weeks.map((week, weekIndex) => ({
-    name: week,
-    data: floors.map(
-      (floor) => declinedChartData[floor][`Week${weekIndex + 1}`] || 0
-    ),
-  }));
-
-  const options = {
-    chart: {
-      type: "bar",
-      stacked: true,
-    },
-    xaxis: {
-      categories: floors,
-      title: {
-        text: "Floor",
-      },
-    },
-    yaxis: {
-      title: {
-        text: "Total Items Requested",
-      },
-    },
-    tooltip: {
-      shared: true,
-      intersect: false,
-      y: {
-        formatter: (val) => `${val} items requested`,
-      },
-    },
-    title: {
-      text: "Total Items Requested by Floor and Week",
-    },
-    legend: {
-      position: "top",
-    },
+      setLoading(false);
+    } catch (err) {
+      console.error('Fetch error:', err);
+      setError('Failed to load dashboard data');
+      setLoading(false);
+    }
   };
 
-  const acceptedOptions = {
-    ...options,
-    title: {
-      text: "Accepted Requests by Floor and Week",
-    },
-  };
-
-  const declinedOptions = {
-    ...options,
-    title: {
-      text: "Declined Requests by Floor and Week",
-    },
-  };
-
-  // Function to toggle between charts and ensure only one is visible
-  const handleChartToggle = (chart) => {
-    setVisibleChart((prevChart) => (prevChart === chart ? null : chart));
-  };
-
-  // Function to close any chart
-  const closeChart = () => setVisibleChart(null);
+  if (loading) return <div className="p-6 text-center text-gray-600">Loading...</div>;
+  if (error) return (
+    <div className="p-6 text-center text-red-500">
+      <p>{error}</p>
+      <button onClick={() => navigate('/admin-login')} className="mt-4 px-4 py-2 bg-blue-500 text-white rounded">
+        Login
+      </button>
+    </div>
+  );
 
   return (
-    <div className="dashboard-container">
-      <div className="dashboard-overview">
-        <div
-          className="overview total-requests"
-          onClick={() => handleChartToggle("totalRequests")}
-        >
-          <h6>Total Requests</h6>
-          <p>{new Date().toLocaleString("default", { month: "long" })}</p>
-          <h4>{totalItems}</h4>
-        </div>
-
-        <div
-          className="overview accepted-requests"
-          onClick={() => handleChartToggle("acceptedRequests")}
-        >
-          <h6>Accepted Requests</h6>
-          <p>{new Date().toLocaleString("default", { month: "long" })}</p>
-          <h4>{acceptedItems}</h4>
-        </div>
-
-        <div
-          className="overview declined-requests"
-          onClick={() => handleChartToggle("declinedRequests")}
-        >
-          <h6>Declined Requests</h6>
-          <p>{new Date().toLocaleString("default", { month: "long" })}</p>
-          <h4>{declinedItems}</h4>
-        </div>
-      </div>
-
-      <div className="chart-section">
-        {visibleChart === "totalRequests" && (
-          <div className="chart-container">
-            <button className="close-chart-btn" onClick={closeChart}>
-              <IoClose size={24} />
-            </button>
-            <Chart options={options} series={series} type="bar" height={350} />
-          </div>
-        )}
-
-        {visibleChart === "acceptedRequests" && (
-          <div className="chart-container">
-            <button className="close-chart-btn" onClick={closeChart}>
-              <IoClose size={24} />
-            </button>
-            <Chart
-              options={acceptedOptions}
-              series={acceptedSeries}
-              type="bar"
-              height={350}
-            />
-          </div>
-        )}
-
-        {visibleChart === "declinedRequests" && (
-          <div className="chart-container">
-            <button className="close-chart-btn" onClick={closeChart}>
-              <IoClose size={24} />
-            </button>
-            <Chart
-              options={declinedOptions}
-              series={declinedSeries}
-              type="bar"
-              height={350}
-            />
-          </div>
-        )}
-      </div>
-      <button
-        onClick={() => setShowItemUsageChart((prev) => !prev)}
-        style={{ padding: "10px 20px", margin: "20px 0", cursor: "pointer" }}
-      >
-        {showItemUsageChart ? "Hide" : "Show"} Item Usage Chart
-      </button>
-
-      {showItemUsageChart && <ItemUsageChart />}
+    <div className="p-6">
+      <h1 className="text-2xl font-bold text-gray-800 mb-6">ICT Admin Dashboard</h1>
+      <DashboardOverview requests={requests} departments={departments} />
+      {/* Add charts and history later */}
     </div>
   );
 };

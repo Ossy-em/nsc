@@ -4,7 +4,7 @@ import ViewRequests from "../View Request/Viewrequest";
 import Store from "../Store/Stored";
 import History from "../History/History";
 import Dashboard from "../Dashboard/Dashboard";
-import Status from "../Status/Status";
+// import Status from "../Status/Status";
 import NSCLogo from "/Users/mac/Desktop/nsc/src/assets/NSCLogo.png";
 import "./DashboardHeader.css";
 
@@ -31,9 +31,9 @@ const AdminDashboard = () => {
                   View Requests
                 </NavLink>
               </li>
-              <li>
+              {/* <li>
                 <NavLink to="/admin-dashboard/status">Status</NavLink>
-              </li>
+              </li> */}
               <li>
                 <NavLink to="/admin-dashboard/history">History</NavLink>
               </li>
@@ -47,7 +47,7 @@ const AdminDashboard = () => {
           <Routes>
             <Route path="view-requests" element={<ViewRequests />} />
             <Route path="dashboard" element={<Dashboard />} />
-            <Route path="status" element={<Status />} />
+            {/* <Route path="status" element={<Status />} /> */}
             <Route path="history" element={<History />} />
             <Route path="store" element={<Store />} />
             <Route path="/" element={<Dashboard />} /> {/* Default home page */}

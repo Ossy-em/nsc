@@ -1,166 +1,80 @@
-import React, { useState, useEffect } from "react";
-import { DataGrid } from "@mui/x-data-grid";
+import { useState, useEffect } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../utils/firebase";
-import "./SupplierRequest.css";
-import { Dialog, DialogContent, DialogTitle, Button } from "@mui/material";
-import { color } from "framer-motion";
+import { DataGrid } from "@mui/x-data-grid";
+import { Button, Modal, Box, Typography } from "@mui/material";
 
-const SupplierRequests = () => {
-  const [requests, setRequests] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
+const SupplierRequestsTable = () => {
+  const [supplierRequests, setSupplierRequests] = useState([]);
   const [selectedRequest, setSelectedRequest] = useState(null);
-  const [openDialog, setOpenDialog] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  useEffect(() => {
+    const fetchSupplierRequests = async () => {
+      const querySnapshot = await getDocs(collection(db, "supplier_requests"));
+      const data = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      setSupplierRequests(data);
+    };
+    fetchSupplierRequests();
+  }, []);
 
   const columns = [
-    { field: "name", headerName: "Supplier Name", width: 195 },
-    { field: "company", headerName: "Supplier's Company", width: 195 },
-    { field: "contact", headerName: "Contact", width: 110 },
-    { field: "itemName", headerName: "Item Name", width: 145 },
-    { field: "model", headerName: "Model", width: 100 },
-    { field: "quantity", headerName: "Qty", width: 50 },
-    { field: "date", headerName: "Date/Time", width: 100 },
+    { field: "supplierName", headerName: "Supplier Name", flex: 1 },
+    { field: "company", headerName: "Company", flex: 1 },
+    { field: "item", headerName: "Item Name", flex: 1 },
+    { field: "quantity", headerName: "Quantity", flex: 1 },
+    { field: "date", headerName: "Date", flex: 1 },
     {
-      field: "action",
-      headerName: "Action",
-      width: 120,
+      field: "viewMore",
+      headerName: "View More",
+      flex: 1,
       renderCell: (params) => (
-        <Button
-          variant="contained"
-          size="small"
-          onClick={() => {
-            setSelectedRequest(params.row);
-            setOpenDialog(true);
-          }}
-        >
+        <Button variant="contained" color="primary" onClick={() => handleViewMore(params.row)}>
           View More
         </Button>
       ),
     },
   ];
 
-  const fetchSupplierRequests = async () => {
-    setLoading(true);
-    try {
-      const querySnapshot = await getDocs(collection(db, "supplier_requests"));
-      const data = querySnapshot.docs.map((doc) => {
-        const docData = doc.data();
-        const firstItem = docData.items?.[0] || {}; // Ensure firstItem exists
-
-        return {
-          id: doc.id,
-          name: docData.name || "N/A",
-          company: docData.suppliersCompany || "N/A",
-          address: docData.address || "N/A",
-          contact: docData.contact || "N/A",
-          itemName: firstItem.itemName || "N/A",
-          model: firstItem.model || "N/A",
-          quantity: firstItem.quantity || 0,
-          price: firstItem.price || 0,
-          note: firstItem.note || "No Notes",
-          date: docData.date || "N/A",
-        };
-      });
-      setRequests(data);
-    } catch (error) {
-      console.error("Error fetching supplier requests:", error);
-    } finally {
-      setLoading(false);
-    }
+  const handleViewMore = (row) => {
+    setSelectedRequest(row);
+    setModalOpen(true);
   };
 
-  useEffect(() => {
-    fetchSupplierRequests();
-  }, []);
-
-  const filteredRequests = requests.filter((request) =>
-    request.name.toLowerCase().includes(search.toLowerCase())
-  );
-
   return (
-    <div className="SupplierRequests" sx={{ tableLayout: "fixed", width: "91%" }} style={{ height: 500, width: "91%" }}>
-      {loading ? (
-        <p>Loading supplier requests...</p>
-      ) : (
-        <div style={{ overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis"}}>
-          <input
-            type="text"
-            placeholder="Search by Supplier Name"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            style={{
-              marginBottom: "10px",
-              padding: "8px",
-              width: "100%",
-              borderRadius: "4px",
-              border: "1px solid #ccc",
-            }}
-          />
-          <div style={{ width: "100%", overflowX: "auto" }}>
-          <DataGrid
-            rows={filteredRequests}
-            columns={columns}
-            pageSize={5}
-            rowsPerPageOptions={[5, 10, 20]}
-            checkboxSelection
-            disableSelectionOnClick
-            sx={{
-              tableLayout: "fixed",
-              width: "100%",
-              overflow: "hidden",
-              '& .MuiDataGrid-cell': {
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-              },
-            }}
-          />
-          </div>
-        </div>
-      )}
+    <div className="p-4  border-gray-200">
+      <Typography variant="h5" gutterBottom>
+        Supplier Requests
+      </Typography>
+      <DataGrid rows={supplierRequests.map((req) => req.items.map((item) => ({
+        id: `${req.id}-${item.name}`,
+        supplierName: req.supplier.name,
+        company: req.supplier.company,
+        item: item.name,
+        quantity: item.quantity,
+        date: new Date(req.timestamp.seconds * 1000).toLocaleDateString(),
+        fullData: req,
+      }))).flat()} columns={columns} autoHeight pageSize={5} />
 
-      <Dialog
-        open={openDialog}
-        onClose={() => {
-          setSelectedRequest(null);
-          setOpenDialog(false);
-        }}
-      >
-        <div className="Modal">
-        <DialogTitle>Supplier Details</DialogTitle>
-        <DialogContent>
+      <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
+        <Box className="p-4 bg-white shadow-lg rounded-md w-96 mx-auto mt-20">
+          <Typography variant="h6">Supplier Details</Typography>
           {selectedRequest && (
             <div>
-              <p>
-                <strong>Name:</strong> {selectedRequest.name}
-              </p>
-              <p>
-                <strong>Company:</strong> {selectedRequest.company}
-              </p>
-              <p>
-                <strong>Contact:</strong> {selectedRequest.contact}
-              </p>
-              <p>
-                <strong>Item:</strong> {selectedRequest.itemName}
-              </p>
-              <p>
-                <strong>Model:</strong> {selectedRequest.model}
-              </p>
-              <p>
-                <strong>Quantity:</strong> {selectedRequest.quantity}
-              </p>
-              <p>
-                <strong>Date:</strong> {selectedRequest.date}
-              </p>
-              <button className="DialogContent-btn" >Close</button>
+              <Typography><strong>Name:</strong> {selectedRequest.supplierName}</Typography>
+              <Typography><strong>Company:</strong> {selectedRequest.company}</Typography>
+              <Typography><strong>Item:</strong> {selectedRequest.item}</Typography>
+              <Typography><strong>Quantity:</strong> {selectedRequest.quantity}</Typography>
+              <Typography><strong>Date:</strong> {selectedRequest.date}</Typography>
             </div>
           )}
-        </DialogContent>
-        </div>
-      </Dialog>
+          <Button fullWidth variant="contained" color="secondary" onClick={() => setModalOpen(false)} className="mt-4">
+            Close
+          </Button>
+        </Box>
+      </Modal>
     </div>
   );
 };
 
-export default SupplierRequests;
+export default SupplierRequestsTable;

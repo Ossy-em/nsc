@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useCallback } from "react";
 import { getDocs, collection, addDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../utils/firebase";
@@ -113,6 +114,8 @@ const SuppliersForm = () => {
   const handleRemoveLastItem = () => {
     setNewItem((prev) => prev.slice(0, -1)); // Removes the last item in the array
   };
+
+  
   
 
   return (

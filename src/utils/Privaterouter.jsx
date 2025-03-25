@@ -1,58 +1,54 @@
+// src/utils/Privaterouter.js
 import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth, db } from './firebase';
-import { doc, getDoc } from 'firebase/firestore';
 import './PrivateRoute.css';
 
 const PrivateRoute = ({ children, requiredRole }) => {
-  const [user, loading, authError] = useAuthState(auth);
-  const [userRole, setUserRole] = useState(null);
-  const [roleLoading, setRoleLoading] = useState(true);
-  const [roleError, setRoleError] = useState(null);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [authError, setAuthError] = useState(null);
 
   useEffect(() => {
-    const fetchUserRole = async () => {
-      if (user) {
-        try {
-          const userDoc = await getDoc(doc(db, "Users", user.uid)); // Ensure collection name matches exactly
-          if (userDoc.exists()) {
-            const data = userDoc.data();
-            setUserRole(data.role);
-          } else {
-            console.error("No role found for user.");
-            setUserRole(null);
-          }
-        } catch (err) {
-          console.error('Error fetching user role:', err);
-          setRoleError(err);
-        }
-        setRoleLoading(false); // Ensure this is called inside the block
-      } else {
-        setRoleLoading(false);
+    try {
+      const userData = sessionStorage.getItem('user');
+      console.log('PrivateRoute checking session:', userData); // Debug
+      if (userData) {
+        const parsedUser = JSON.parse(userData);
+        setUser(parsedUser);
       }
-    };
+    } catch (error) {
+      console.error('Error parsing user data:', error);
+      setAuthError(error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
-    fetchUserRole();
-  }, [user]);
-
-  if (loading || roleLoading) {
-    return <div className="div-loader"><span class="loader"></span></div>;
+  if (loading) {
+    return <div className="div-loader"><span className="loader"></span></div>;
   }
 
-  if (authError || roleError) {
-    console.error('Authentication or role error:', authError || roleError);
-    return <div>Error: {authError?.message || roleError?.message}</div>;
+  if (authError) {
+    console.error('Authentication error:', authError);
+    return (
+      <div className="error-message">
+        <p>Error: {authError.message}</p>
+        <Navigate to="/" />
+      </div>
+    );
   }
 
   if (!user) {
+    console.log('No user, redirecting to /'); // Debug
     return <Navigate to="/" />;
   }
 
-  if (requiredRole && userRole !== requiredRole) {
+  if (requiredRole && user.role !== requiredRole) {
+    console.log(`Role mismatch: ${user.role} !== ${requiredRole}, redirecting to /`); // Debug
     return <Navigate to="/" />;
   }
 
+  console.log('PrivateRoute passed, rendering children'); // Debug
   return children;
 };
 

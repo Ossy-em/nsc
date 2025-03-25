@@ -1,0 +1,52 @@
+.admin {
+  background: linear-gradient(135deg, #ccddd3, #d4e8dd); 
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.admin-dashboard {
+  background: linear-gradient(135deg, #ccddd3, #d4e8dd, #e6f2ea, #f2faf5); 
+  min-height: 100vh;
+  display: flex;
+  border-radius: 15px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 23px;
+
+}
+
+.dashboardsidebar-image{
+  display: flex;
+  flex-wrap:nowrap;
+  gap: 10px;
+}
+
+.dashboard-sidebar {
+  width: 250px;
+  background-color: transparent;
+  padding: 20px;
+}
+
+.dashboard-sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 75px;
+}
+
+.dashboard-sidebar ul li {
+  margin: 20px 0;
+}
+
+.dashboard-sidebar ul li a {
+  text-decoration: none;
+  padding: 10px 15px;
+  display: block;
+  color: #2d6a4f; 
+  transition: background-color 0.3s ease;
+  border-radius: 8px; 
+}
+
+.dashboard-sidebar ul li a:hover,
+.dashboard-sidebar ul li a.active {
+  background-color: #e7f5e8; /* Light green background on hover/active */
+  color: #2d6a4f; /* Ensure text color remains dark green */
+}
