@@ -1,4 +1,3 @@
-// src/utils/Privaterouter.js
 import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import './PrivateRoute.css';
@@ -11,7 +10,7 @@ const PrivateRoute = ({ children, requiredRole }) => {
   useEffect(() => {
     try {
       const userData = sessionStorage.getItem('user');
-      console.log('PrivateRoute checking session:', userData); // Debug
+      console.log('PrivateRoute checking session:', userData); 
       if (userData) {
         const parsedUser = JSON.parse(userData);
         setUser(parsedUser);
@@ -39,16 +38,16 @@ const PrivateRoute = ({ children, requiredRole }) => {
   }
 
   if (!user) {
-    console.log('No user, redirecting to /'); // Debug
+    console.log('No user, redirecting to /'); 
     return <Navigate to="/" />;
   }
 
   if (requiredRole && user.role !== requiredRole) {
-    console.log(`Role mismatch: ${user.role} !== ${requiredRole}, redirecting to /`); // Debug
+    console.log(`Role mismatch: ${user.role} !== ${requiredRole}, redirecting to /`); 
     return <Navigate to="/" />;
   }
 
-  console.log('PrivateRoute passed, rendering children'); // Debug
+  console.log('PrivateRoute passed, rendering children'); 
   return children;
 };
 
