@@ -211,7 +211,7 @@ const DepartmentAuth = () => {
                 onChange={handleRoleToggle}
               />
               <label htmlFor="directorRole" className="text-gray-700">
-                I am the department director
+                Department director
               </label>
             </motion.div>
             {error && (

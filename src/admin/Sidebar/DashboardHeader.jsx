@@ -4,6 +4,7 @@ import ViewRequests from "../View Request/Viewrequest";
 import Store from '../Store/Stored';
 import History from '../History/History';
 import Dashboard from '../Dashboard/Dashboard';
+import AdminUserManagement from '../AdminUserManagement/AdminUserManagement'; // New component
 // import Status from '../Status/Status';
 import NSCLogo from '/Users/mac/Desktop/nsc/src/assets/NSCLogo.png';
 
@@ -31,7 +32,6 @@ const DashboardHeader = () => {
           isCollapsed ? 'w-16' : 'w-64'
         }`}
       >
-      
         <div className="flex items-center p-4 border-b border-gray-700">
           <img
             src={NSCLogo}
@@ -117,10 +117,22 @@ const DashboardHeader = () => {
                 {!isCollapsed && 'Store'}
               </NavLink>
             </li>
+            <li>
+              <NavLink
+                to="/admin-dashboard/users"
+                className={({ isActive }) =>
+                  `flex items-center p-2 rounded-lg transition-colors ${
+                    isActive ? 'bg-green-600 text-white' : 'text-gray-300 hover:bg-gray-700'
+                  }`
+                }
+              >
+                <span className="mr-3">👥</span>
+                {!isCollapsed && 'Manage Users'}
+              </NavLink>
+            </li>
           </ul>
         </nav>
 
-        {/* Logout */}
         <div className="p-4 border-t border-gray-700">
           <button
             onClick={handleLogout}
@@ -140,6 +152,7 @@ const DashboardHeader = () => {
           {/* <Route path="status" element={<Status />} /> */}
           <Route path="history" element={<History />} />
           <Route path="store" element={<Store />} />
+          <Route path="users" element={<AdminUserManagement />} /> {/* New route */}
           <Route path="/" element={<Dashboard />} />
         </Routes>
       </div>

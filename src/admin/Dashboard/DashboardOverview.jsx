@@ -10,13 +10,19 @@ const DashboardOverview = ({ requests, departments }) => {
   const now = new Date();
   const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
 
-  const totalRequests = requests.filter(req => 
-    req.status === 'approved' && 
-    req.createdAt?.seconds && 
-    new Date(req.createdAt.seconds * 1000) >= monthStart
-  ).length;
+ // Total Requests: All Director-approved (approved or admin_approved) this month
+ const totalRequests = requests.filter(req => 
+  (req.status === 'approved' || req.status === 'admin_approved') && 
+  req.createdAt?.seconds && 
+  new Date(req.createdAt.seconds * 1000) >= monthStart
+).length;
 
-  const pendingRequests = totalRequests; // Same as Total for now
+// Pending Requests: Director-approved but not ICT-approved this month
+const pendingRequests = requests.filter(req => 
+  req.status === 'approved' && 
+  req.createdAt?.seconds && 
+  new Date(req.createdAt.seconds * 1000) >= monthStart
+).length;
 
   const approvedRequests = requests.filter(req => 
     req.status === 'admin_approved' && 
@@ -33,7 +39,7 @@ const DashboardOverview = ({ requests, departments }) => {
           className="p-4 bg-white rounded-lg shadow-md cursor-pointer hover:bg-gray-100"
           onClick={() => setShowTotalModal(true)}
         >
-          <h2 className="text-lg font-semibold text-gray-700">Total Director-Approved Requests</h2>
+          <h2 className="text-lg font-semibold text-gray-700">Total Requests</h2>
           <p className="text-3xl font-bold text-gray-800">{totalRequests}</p>
         </div>
         <div
@@ -63,7 +69,7 @@ const DashboardOverview = ({ requests, departments }) => {
         onClose={() => setShowTotalModal(false)}
         requests={requests}
         departments={departments}
-        title="Total Director-Approved Requests by Department (This Month)"
+        title="Total Requests by Department For The Month"
         statusFilter="approved"
       />
       <RequestChartModal
@@ -71,7 +77,7 @@ const DashboardOverview = ({ requests, departments }) => {
         onClose={() => setShowPendingModal(false)}
         requests={requests}
         departments={departments}
-        title="Pending Requests by Department (This Month)"
+        title="Pending Requests by Department For The Month"
         statusFilter="approved"
       />
       <RequestChartModal
@@ -79,7 +85,7 @@ const DashboardOverview = ({ requests, departments }) => {
         onClose={() => setShowApprovedModal(false)}
         requests={requests}
         departments={departments}
-        title="ICT Admin-Approved Requests by Department (This Month)"
+        title="ICT Admin-Approved Requests by Department For The Month"
         statusFilter="admin_approved"
       />
     </>

@@ -1,9 +1,10 @@
-import React, { useState } from "react";
-import { NavLink, Routes, Route, Navigate } from "react-router-dom";
+import React from "react";
+import { NavLink, Routes, Route } from "react-router-dom";
 import ViewRequests from "../View Request/Viewrequest";
 import Store from "../Store/Stored";
 import History from "../History/History";
 import Dashboard from "../Dashboard/Dashboard";
+import AdminUserManagement from "../AdminUserManagement/AdminUserManagement"; // New component
 // import Status from "../Status/Status";
 import NSCLogo from "/Users/mac/Desktop/nsc/src/assets/NSCLogo.png";
 import "./DashboardHeader.css";
@@ -19,7 +20,7 @@ const AdminDashboard = () => {
               alt="Admin Logo"
               style={{ width: "72px", height: "63px" }}
             />
-            <h1> Admin</h1>
+            <h1>Admin</h1>
           </div>
           <nav>
             <ul>
@@ -40,6 +41,9 @@ const AdminDashboard = () => {
               <li>
                 <NavLink to="/admin-dashboard/store">Store</NavLink>
               </li>
+              <li>
+                <NavLink to="/admin-dashboard/users">Manage Users</NavLink>
+              </li>
             </ul>
           </nav>
         </div>
@@ -50,6 +54,7 @@ const AdminDashboard = () => {
             {/* <Route path="status" element={<Status />} /> */}
             <Route path="history" element={<History />} />
             <Route path="store" element={<Store />} />
+            <Route path="users" element={<AdminUserManagement />} /> {/* New route */}
             <Route path="/" element={<Dashboard />} /> {/* Default home page */}
           </Routes>
         </div>
