@@ -4,9 +4,8 @@ import ViewRequests from "../View Request/Viewrequest";
 import Store from '../Store/Stored';
 import History from '../History/History';
 import Dashboard from '../Dashboard/Dashboard';
-import AdminUserManagement from '../AdminUserManagement/AdminUserManagement'; // New component
-// import Status from '../Status/Status';
-import NSCLogo from '/Users/mac/Desktop/nsc/src/assets/NSCLogo.png';
+import AdminUserManagement from '../AdminUserManagement/AdminUserManagement'; 
+import NSCLogo from '../../assets/NSCLogo.png';
 
 const DashboardHeader = () => {
   const navigate = useNavigate();
@@ -41,7 +40,6 @@ const DashboardHeader = () => {
           {!isCollapsed && <h1 className="text-xl font-bold">ICT Admin</h1>}
         </div>
 
-        {/* Toggle Button */}
         <button
           onClick={toggleSidebar}
           className="p-4 text-gray-400 hover:text-white focus:outline-none"
@@ -49,7 +47,6 @@ const DashboardHeader = () => {
           {isCollapsed ? '>' : '<'}
         </button>
 
-        {/* Nav Links */}
         <nav className="flex-grow">
           <ul className="space-y-2 p-4">
             <li>
@@ -78,19 +75,7 @@ const DashboardHeader = () => {
                 {!isCollapsed && 'View Requests'}
               </NavLink>
             </li>
-            {/* <li>
-              <NavLink
-                to="/admin-dashboard/status"
-                className={({ isActive }) =>
-                  `flex items-center p-2 rounded-lg transition-colors ${
-                    isActive ? 'bg-green-600 text-white' : 'text-gray-300 hover:bg-gray-700'
-                  }`
-                }
-              >
-                <span className="mr-3">⏳</span>
-                {!isCollapsed && 'Status'}
-              </NavLink>
-            </li> */}
+           
             <li>
               <NavLink
                 to="/admin-dashboard/history"
@@ -149,10 +134,9 @@ const DashboardHeader = () => {
         <Routes>
           <Route path="view-requests" element={<ViewRequests />} />
           <Route path="dashboard" element={<Dashboard />} />
-          {/* <Route path="status" element={<Status />} /> */}
           <Route path="history" element={<History />} />
           <Route path="store" element={<Store />} />
-          <Route path="users" element={<AdminUserManagement />} /> {/* New route */}
+          <Route path="users" element={<AdminUserManagement />} />
           <Route path="/" element={<Dashboard />} />
         </Routes>
       </div>

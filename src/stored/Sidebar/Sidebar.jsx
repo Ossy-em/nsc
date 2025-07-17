@@ -6,7 +6,7 @@ import ItemInventory from "../ItemInventory/ItemInventory";
 import History from "../History/History";
 import SupplierForm from "../SupplierForm/SupplierForm";
 import Notification from "../Notification";
-import Logout from "../../login/Logout"; // Import Logout component
+import Logout from "../../login/Logout"; 
 import NSCLogo from "/Users/mac/Desktop/nsc/src/assets/NSCLogo.png";
 
 const StoreSidebar = () => {
