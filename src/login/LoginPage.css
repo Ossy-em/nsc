@@ -1,21 +1,21 @@
-/* Container for the entire login page */
+
 .login-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     height: 100vh;
-    background-color: #e8f5e9; /* Very light green background */
+    background-color: #ffffff; /* Very light green background */
   }
   
-  /* Container for the staff and admin buttons */
+
   .staff-admin-con {
     display: flex;
     justify-content: center;
     margin-bottom: 30px;
   }
   
-  /* Styles for the buttons */
+
   .staff-admin-con button {
     background-color: #4CAF50; /* Primary green */
     color: white;
@@ -29,12 +29,12 @@
   }
   
   .staff-admin-con button:hover {
-    background-color: #45a049; /* Darker green on hover */
-    transform: translateY(-2px); /* Slight lift effect on hover */
+    background-color: #45a049;
+    transform: translateY(-2px); 
   }
   
-  /* Active state for the selected button */
+
   .staff-admin-con .active {
-    background-color: #388E3C; /* Even darker green for active state */
+    background-color: #388E3C; 
   }
   
