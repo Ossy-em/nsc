@@ -1,4 +1,4 @@
-// src/admin/AdminLoginPage.js
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { collection, query, where, getDocs } from 'firebase/firestore';
@@ -6,7 +6,7 @@ import { db } from '../../utils/firebase';
 
 const AdminLogin = () => {
   const [username, setUsername] = useState('ictadmin');
-  const [password, setPassword] = useState('ICT2025');
+  const [password, setPassword] = useState('');//ICT2025
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
@@ -16,7 +16,7 @@ const AdminLogin = () => {
 
     try {
       console.log('Starting Firestore query...');
-      const adminsRef = collection(db, 'admins'); // Matches your DB
+      const adminsRef = collection(db, 'admins'); 
       console.log('Collection ref:', adminsRef);
       const q = query(adminsRef, where('username', '==', username));
       console.log('Query built:', q);
@@ -40,7 +40,7 @@ const AdminLogin = () => {
 
       console.log('Login success, setting session...');
       sessionStorage.setItem('user', JSON.stringify({
-        role: 'admin', // Hardcoded to match PrivateRoute
+        role: 'admin', 
         username: adminData.username,
         id: snapshot.docs[0].id,
       }));
